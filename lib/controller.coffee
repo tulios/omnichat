@@ -1,4 +1,3 @@
-sys = require("sys")
 url = require("url");
 qs = require("querystring")
 
@@ -12,7 +11,7 @@ class Controller extends BaseController
       (request, response) ->
         nicks = []
         for own id of self.sessionManager.sessions
-          session = sessionManager.sessions[id]
+          session = self.sessionManager.sessions[id]
           nicks.push(session.nick)
 
         response.simpleJSON(200, {nicks: nicks})

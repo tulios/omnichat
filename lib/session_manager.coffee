@@ -1,5 +1,3 @@
-sys = require("sys")
-
 Session = require("./session")
 
 class SessionManager
@@ -13,11 +11,11 @@ class SessionManager
 
   newSession: (nick) ->
     session = new Session @channel, nick
-    sys.puts("creating session #{session.id}")
+    console.log("creating session #{session.id}")
     @sessions[session.id] = session
 
   destroySession: (session) ->
-    sys.puts("destroying session #{session.id}")
+    console.log("destroying session #{session.id}")
     session.destroy
     delete @sessions[session.id]
 

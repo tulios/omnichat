@@ -1,8 +1,5 @@
-sys = require("sys")
-
 class Channel
   constructor: ->
-    @sys = sys
     @messages = []
     @callbacks = []
     # this._clearOldCallbacks();
@@ -35,9 +32,9 @@ class Channel
 
   _routeMessage: (message) ->
     switch message.type
-      when "msg" then @sys.puts("<#{message.nick}>: #{message.text}")
-      when "join" then @sys.puts("#{message.nick} joined")
-      when "part" then @sys.puts("#{message.nick} part")
+      when "msg"  then console.log("<#{message.nick}>: #{message.text}")
+      when "join" then console.log("#{message.nick} joined")
+      when "part" then console.log("#{message.nick} part")
 
   _clearOldCallbacks: ->
     intervalCallback = ->

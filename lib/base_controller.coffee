@@ -9,7 +9,7 @@ class BaseController
     @sessionManager
 
   get: (path, handler) ->
-    sys.puts("registering path: #{path}")
+    console.log("registering path: #{path}")
     @routes[path] = handler
 
 module.exports = BaseController

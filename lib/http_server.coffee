@@ -1,7 +1,6 @@
 createServer = require("http").createServer
 readFile = require("fs").readFile
 url = require("url");
-sys = require("sys")
 
 class HttpServer
   NOT_FOUND: (request, response) ->
@@ -21,9 +20,10 @@ class HttpServer
   listen: (port, host) ->
     @server = this._createServer()
     @server.listen(port, host)
-    sys.puts("\nServer at http://#{host || '127.0.0.1'}:#{port}/\n")
+    console.log("\nServer at http://#{host || '127.0.0.1'}:#{port}/\n")
 
   close: ->
+    console.log("\nClosing...")
     @server.close()
 
   _createServer: ->
@@ -31,7 +31,7 @@ class HttpServer
     createServer (request, response) ->
       if request.method == "GET" or request.method == "HEAD"
         pathname = url.parse(request.url).pathname
-        sys.puts("GET - pathname: #{pathname}")
+        console.log("GET - pathname: #{pathname}")
 
         handler = routes[pathname] || Server::NOT_FOUND
         response.simpleText = (code, body) ->
