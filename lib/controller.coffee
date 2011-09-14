@@ -1,53 +1,57 @@
-createServer = require("http").createServer
-readFile = require("fs").readFile
-url = require("url");
 sys = require("sys")
+url = require("url");
+qs = require("querystring")
 
-class Controller
-  MAP: {}
-  NOT_FOUND: (request, response) ->
-    response.writeHead(404, {
-      "Content-Type": "text/plain",
-      "Content-Length": "Not Found\n".length
-    })
-    response.end("Not Found\n")
+BaseController = require("./base_controller")
+SessionManager = require("./session_manager")
 
-  constructor: ->
-    @server = this._createServer()
+class Controller extends BaseController
+  registerRoutes: ->
+    self = this
+    this.get "/who",
+      (request, response) ->
+        nicks = []
+        for own id of self.sessionManager.sessions
+          session = sessionManager.sessions[id]
+          nicks.push(session.nick)
 
-  get: (path, handler) ->
-    sys.puts("registering: #{path}")
-    Controller::MAP[path] = handler
+        response.simpleJSON(200, {nicks: nicks})
 
-  listen: (port, host) ->
-    @server.listen(port, host)
-    sys.puts("Server at http://#{host || '127.0.0.1'}:#{port}/")
+    this.get "/join",
+      (request, response) ->
+        nick = qs.parse(url.parse(request.url).query).nick
+        if nick == null or nick.length == 0
+          request.simpleJSON(400, {error: "Bad Nick!"})
+          return
 
-  close: ->
-    @server.close()
+        session = self.sessionManager.newSession(nick)
+        if session == null
+          request.simpleJSON(400, {error: "Nick in use"})
+          return
 
-  _createServer: ->
-    createServer (request, response) ->
-      if request.method == "GET" or request.method == "HEAD"
-        pathname = url.parse(request.url).pathname
-        sys.puts("GET - pathname: #{pathname}")
+        response.simpleJSON(200, { id: session.id, nick: session.nick })
 
-        handler = Controller::MAP[pathname] || Controller::NOT_FOUND
-        response.simpleText = (code, body) ->
-          response.writeHead(code, {
-            "Content-Type": "text/plain",
-            "Content-Length": body.length
-          })
-          response.end(body)
+    this.get "/part",
+      (request, response) ->
+        id = qs.parse(url.parse(request.url).query).id
+        if id and self.sessionManager.sessions[id]
+          session = self.sessionManager.sessions[id]
+          self.sessionManager.destroySession(session)
 
-        response.simpleJSON = (code, obj) ->
-          body = new Buffer(JSON.stringify(obj))
-          response.writeHead(code, {
-            "Content-Type": "text/json",
-            "Content-Length": body.length
-          })
-          response.end(body)
+        response.simpleJSON(200, {status: "ok"})
 
-        handler(request, response)
+    this.get "/send",
+      (request, response) ->
+        id = qs.parse(url.parse(request.url).query).id
+        text = qs.parse(url.parse(request.url).query).text
+
+        session = self.sessionManager.sessions[id]
+        if !session or !text
+          response.simpleJSON(400, {error: "No such session id!"})
+          return
+
+        session.ping()
+        session.addMessage("msg", text)
+        response.simpleJSON(200, {status: "ok"})
 
 module.exports = Controller
