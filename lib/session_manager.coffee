@@ -1,8 +1,9 @@
+Channel = require("./channel")
 Session = require("./session")
 
 class SessionManager
-  constructor: (channel) ->
-    @channel = channel
+  constructor: () ->
+    @channel = new Channel();
     @sessions = {}
     # this._killOldSessionsListener()
 
