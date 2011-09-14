@@ -2,17 +2,17 @@
 
 ## Instalando
 
-  1 - Instalar node.js
-    https://github.com/joyent/node/wiki/Installation
+  1 - Instalar node.js  
+    [https://github.com/joyent/node/wiki/Installation](https://github.com/joyent/node/wiki/Installation)  
   
-  2 - Instalar coffeeScript 
-    npm install -g coffee-script
+  2 - Instalar coffeeScript  
+    npm install -g coffee-script  
 
 ## Subindo o server
 
   Na pasta do projeto faça:
     
-  ➔ coffee server.coffee
+  ➔ coffee server.coffee  
     
 ## Usando
 
