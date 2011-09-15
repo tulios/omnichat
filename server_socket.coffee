@@ -12,6 +12,6 @@ app.configure ->
   app.use(express.static(__dirname + '/public'))
 
 io.sockets.on 'connection', (socket) ->
-  socket.emit 'news', { hello: 'world' }
+  socket.emit 'news', { hello: "Enviado pelo server: world" }
   socket.on 'my other event', (data) ->
-    console.log(data)
+    console.log("recebido pelo client: #{data.my}")
