@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+  <title>OmniChat Example Client</title>
+  <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+  <script src="coffee-script.js"></script>
+  <script type="text/coffeescript">
+    socket = io.connect('http://localhost')
+    socket.on 'news', (data) ->
+      console.log(data)
+      socket.emit 'my other event', { my: 'data' }
+  </script>
+</head>
+<body>
+</body>
+</html>
