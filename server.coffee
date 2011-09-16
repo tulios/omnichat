@@ -1,19 +1,29 @@
 PORT = process.env.PORT || 3000
 HOST = process.env.HOST || null
 
-Channel = require("./lib/channel")
-SessionManager = require("./lib/session_manager")
-HttpServer = require("./lib/http_server")
-Controller = require("./lib/controller")
+io = require 'socket.io'
+express = require 'express'
 
-console.log("Starting server...\n")
-httpServer = new HttpServer()
+app = express.createServer()
+app.listen(PORT)
+io = io.listen(app)
 
-controller = new Controller(new SessionManager())
-controller.registerRoutes()
+app.configure ->
+  app.use(express.static(__dirname + '/public'))
 
-httpServer.mergeRoutes(controller)
-httpServer.listen(PORT, HOST)
-process.addListener "SIGINT", ->
-  httpServer.close()
-  process.exit(0)
+io.sockets.on 'connection', (socket) ->
+  socket.on 'join', (data) ->
+    socket.set 'user', data
+    channel = data.channel
+    socket.join(channel)
+    console.log("#{data.nick} join to #{channel}")
+
+  socket.on 'message', (data) ->
+    socket.get 'user', (err, user) ->
+      console.log("broadcast to #{user.channel}")
+      socket.broadcast.to(user.channel).emit("new message", {
+        id: socket.id,
+        nick: user.nick,
+        img: user.img
+        text: data.text
+      })

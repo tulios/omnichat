@@ -4,14 +4,113 @@
   <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
   <title>OmniChat Example Client</title>
   <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+
   <script src="coffee-script.js"></script>
+  <script src="http://localhost:3000/coffeescripts/client.js"></script>
+
   <script type="text/coffeescript">
-    socket = io.connect('http://localhost')
-    socket.on 'news', (data) ->
-      console.log(data)
-      socket.emit 'my other event', { my: 'data' }
+    client = null
+    channel = null
+
+    setup_chat_client = ->
+      $("#message").focus()
+      $("#send_button").click (e) ->
+        e.preventDefault()
+        message = $("#message").attr "value"
+        add_new_message({img: client.img, nick: client.nick, text: message})
+        client.send_message message
+        $("#message").attr "value", ""
+
+    get_user = ->
+      {
+        id: "1234",
+        nick: $("#user_nick").attr("value"),
+        img: $("#user_img").attr("value")
+      }
+
+    add_new_message = (data) ->
+      message_container = $('<div class="omnichat-message">')
+      message_img = $('<div class="omnichat-user-img"><img src="'+data.img+'"></div>')
+      message_nick = $('<div class="omnichat-user-nick">' +data.nick+'</div>')
+      message_text = $('<div class="omnichat-user-text">' +data.text+'</div>')
+
+      message_container.append(message_img)
+      message_container.append(message_nick)
+      message_container.append(message_text)
+      $("#chat_messages_container").append(message_container)
+
+    connect = ->
+      channel = $("#user_channel").attr "value"
+      client = new Client({
+        user: get_user(),
+        onMessage: (data) ->
+          console.log("Message from #{data.nick}: #{data.text}")
+          add_new_message(data)
+      })
+
+      client.connect channel, ->
+        $("#connect_form").hide();
+        $("#chat_panel").show();
+        setup_chat_client()
+
+    $ ->
+      $("#connect_button").click (e) ->
+        e.preventDefault()
+        connect()
+
   </script>
 </head>
 <body>
+
+  <form id="connect_form">
+    <p>
+      <label>Channel:</label><br/>
+      <input type="text" name="user_channel" id="user_channel">
+    </p>
+    <p>
+      <label>Nick:</label><br/>
+      <input type="text" name="user_nick" id="user_nick">
+    </p>
+    <p>
+      <label>Img:</label><br/>
+      <input type="text" name="user_img" id="user_img">
+    </p>
+
+    <input type="button" value="Connect" id="connect_button">
+  </form>
+
+  <div id="chat_panel"  style="display: none;">
+    <div id="chat_messages_container">
+    <div>
+    <form id="chat_client">
+      <p>
+        <label>Message:</label><br/>
+        <input type="text" name="message" id="message">
+        <input type="button" value="Send" id="send_button">
+      </p>
+    </form>
+  </div>
+
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

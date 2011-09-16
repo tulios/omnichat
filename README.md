@@ -7,6 +7,9 @@
   
   2 - Instalar coffeeScript  
     npm install -g coffee-script  
+  
+  3 -
+    npm install express socket.io  
 
 ## Subindo o server
 
@@ -16,11 +19,6 @@
     
 ## Usando
 
-  Só fiz o server, logo não temos nada de client por enquanto, o chat rola no terminal =P
-  Abra outra aba.
-
-  ➔  curl 127.0.0.1:3000/join?nick=tulios  
-  ➔  curl 127.0.0.1:3000/who  
-  ➔  curl "127.0.0.1:3000/send?id=58175407628&text=oi"  
+  Abra:  
+    http://localhost:3000/example/index.html
   
-  58175407628 = sessionId do usuário, pra testar tem que pegar esse número na aba de server
