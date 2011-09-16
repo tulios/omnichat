@@ -1,0 +1,12 @@
+.bundle
+db/*.sqlite3
+log/*.log
+tmp/
+Gemfile.lock
+.DS_Store
+*.dump
+config/database.yml
+*~
+.DS_Store
+public/stylesheets/.DS_Store
+public/javascripts/plugins/.DS_Store
