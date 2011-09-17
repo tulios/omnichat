@@ -20,7 +20,8 @@
     io.enable('browser client minification');
     io.enable('browser client etag');
     io.set('log level', 1);
-    return io.set('transports', ['jsonp-polling', 'xhr-polling', 'flashsocket', 'htmlfile']);
+    io.set("transports", ['xhr-polling', 'flashsocket', 'jsonp-polling', 'htmlfile']);
+    return io.set("polling duration", 10);
   });
   app.configure(function() {
     return app.use(express.static(__dirname + '/public'));
