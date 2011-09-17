@@ -1,11 +1,18 @@
 PORT = process.env.PORT || 3000
 HOST = process.env.HOST || null
+ENV = process.env.NODE_ENV || "development"
+
+console.log("Environment: #{ENV}")
 
 io = require 'socket.io'
 express = require 'express'
 
 app = express.createServer()
-app.listen(PORT)
+
+app.listen PORT, ->
+  addr = app.address()
+  console.log("OmniChat listening on http://#{addr.address}:#{addr.port}")
+
 io = io.listen(app)
 
 io.configure 'development', ->

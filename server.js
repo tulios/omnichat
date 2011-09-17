@@ -1,11 +1,17 @@
 (function() {
-  var HOST, PORT, app, express, io;
+  var ENV, HOST, PORT, app, express, io;
   PORT = process.env.PORT || 3000;
   HOST = process.env.HOST || null;
+  ENV = process.env.NODE_ENV || "development";
+  console.log("Environment: " + ENV);
   io = require('socket.io');
   express = require('express');
   app = express.createServer();
-  app.listen(PORT);
+  app.listen(PORT, function() {
+    var addr;
+    addr = app.address();
+    return console.log("OmniChat listening on http://" + addr.address + ":" + addr.port);
+  });
   io = io.listen(app);
   io.configure('development', function() {
     return io.set('transports', ['websocket']);
