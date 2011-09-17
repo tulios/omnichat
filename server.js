@@ -17,6 +17,8 @@
     return io.set('transports', ['websocket']);
   });
   io.configure('production', function() {
+    io.set('log level', 1);
+    io.set("transports", ['xhr-polling', 'jsonp-polling', 'htmlfile']);
     return io.set("polling duration", 10);
   });
   app.configure(function() {

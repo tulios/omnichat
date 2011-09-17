@@ -19,11 +19,10 @@ io.configure 'development', ->
   io.set 'transports', ['websocket']
 
 io.configure 'production', ->
-  # io.enable 'browser client minification'
-  # io.enable 'browser client etag'
-  # io.set 'log level', 1
-  # # websocket => nao suportado pelo heroku
-  # io.set "transports", ['xhr-polling', 'flashsocket', 'jsonp-polling', 'htmlfile']
+  io.set 'log level', 1
+  # 'websocket' => nao suportado pelo heroku
+  # 'flashsocket' => nao suportado pelo heroku
+  io.set "transports", ['xhr-polling', 'jsonp-polling', 'htmlfile']
   io.set "polling duration", 10
 
 app.configure ->
