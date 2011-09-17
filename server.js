@@ -4,6 +4,9 @@
   HOST = process.env.HOST || null;
   io = require('socket.io');
   express = require('express');
+  app = express.createServer();
+  app.listen(PORT);
+  io = io.listen(app);
   io.configure('development', function() {
     return io.set('transports', ['websocket']);
   });
@@ -13,9 +16,6 @@
     io.set('log level', 1);
     return io.set('transports', ['websocket', 'flashsocket', 'htmlfile', 'xhr-polling', 'jsonp-polling']);
   });
-  app = express.createServer();
-  app.listen(PORT);
-  io = io.listen(app);
   app.configure(function() {
     return app.use(express.static(__dirname + '/public'));
   });
