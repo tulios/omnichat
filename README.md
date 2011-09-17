@@ -21,6 +21,9 @@
 
   Abra:  
     http://localhost:3000/example/index.html
+  
+  Heroku:
+    http://omnichat.herokuapp.com/example/index.html
 
 ## Compilando
     
