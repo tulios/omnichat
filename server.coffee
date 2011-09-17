@@ -22,7 +22,8 @@ io.configure 'production', ->
   io.enable 'browser client minification'
   io.enable 'browser client etag'
   io.set 'log level', 1
-  io.set 'transports', ['websocket', 'flashsocket', 'htmlfile', 'xhr-polling', 'jsonp-polling']
+  # websocket => nao suportado pelo heroku
+  io.set 'transports', ['jsonp-polling', 'xhr-polling', 'flashsocket', 'htmlfile']
 
 app.configure ->
   app.use(express.static(__dirname + '/public'))
