@@ -4,6 +4,15 @@
   HOST = process.env.HOST || null;
   io = require('socket.io');
   express = require('express');
+  io.configure('development', function() {
+    return io.set('transports', ['websocket']);
+  });
+  io.configure('production', function() {
+    io.enable('browser client minification');
+    io.enable('browser client etag');
+    io.set('log level', 1);
+    return io.set('transports', ['websocket', 'flashsocket', 'htmlfile', 'xhr-polling', 'jsonp-polling']);
+  });
   app = express.createServer();
   app.listen(PORT);
   io = io.listen(app);

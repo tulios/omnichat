@@ -7,7 +7,7 @@ class Client
 
   connect: (channel, onConnect) ->
     @channel = channel
-    @socket = io.connect('http://localhost')
+    @socket = io.connect('http://omnichat.herokuapp.com')
     console.log("#{@nick} join channel #{@channel}")
     @socket.on "connect", =>
       @socket.emit "join", {

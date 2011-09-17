@@ -10,7 +10,7 @@
     }
     Client.prototype.connect = function(channel, onConnect) {
       this.channel = channel;
-      this.socket = io.connect('http://localhost');
+      this.socket = io.connect('http://omnichat.herokuapp.com');
       console.log("" + this.nick + " join channel " + this.channel);
       return this.socket.on("connect", __bind(function() {
         this.socket.emit("join", {
