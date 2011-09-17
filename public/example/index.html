@@ -3,11 +3,57 @@
 <head>
   <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
   <title>OmniChat Example Client</title>
+
+  <style>
+    body {
+      background: #F8F8F8;
+    }
+    #chat_client {
+      position: fixed;
+      bottom: 0;
+      background: #888888;
+      padding: 5px 20px;
+      margin-left: -8px;
+      z-index: 2;
+      width: 100%;
+    }
+    #chat_client .chat-message-field {
+      width: 90%;
+      padding: 10px;
+      font-size: 18px;
+    }
+    #chat_client .chat-message-label {
+      color: white;
+    }
+    #chat_messages_container {
+      margin-bottom: 120px;
+    }
+    .omnichat-message {
+      border-bottom: 1px solid gray;
+      padding-bottom: 5px;
+      margin: 2px 0;
+    }
+    .omnichat-connect {
+      background: #C5FAE5;
+    }
+    .omnichat-connect .omnichat-user-nick,
+    .omnichat-disconnect .omnichat-user-nick {
+      display: none;
+    }
+    .omnichat-disconnect {
+      background: #F5ABAB;
+    }
+    .omnichat-me {
+      border: 2px solid black;
+      padding: 2px;
+    }
+    </style>
+
   <script src="/socket.io/socket.io.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
 
   <script src="coffee-script.js"></script>
-  <script src="/coffeescripts/client.js"></script>
+  <script src="/javascripts/client.js"></script>
 
   <script type="text/coffeescript">
     client = null
@@ -15,12 +61,17 @@
 
     setup_chat_client = ->
       $("#message").focus()
+      $('#message').keypress (e) ->
+        if e.keyCode == 13
+          e.preventDefault()
+          $("#send_button").click()
+
       $("#send_button").click (e) ->
         e.preventDefault()
         message = $("#message").attr "value"
-        add_new_message({img: client.img, nick: client.nick, text: message})
         client.send_message message
         $("#message").attr "value", ""
+        $("#message").focus()
 
     get_user = ->
       {
@@ -29,24 +80,56 @@
         img: $("#user_img").attr("value")
       }
 
-    add_new_message = (data) ->
-      message_container = $('<div class="omnichat-message">')
-      message_img = $('<div class="omnichat-user-img"><img src="'+data.img+'"></div>')
-      message_nick = $('<div class="omnichat-user-nick">' +data.nick+'</div>')
-      message_text = $('<div class="omnichat-user-text">' +data.text+'</div>')
+    format_date = (date) ->
+      h = date.getHours()
+      hour = h < 10 ? "0" + h : h;
+      m = date.getMinutes();
+      minutes = n < 10 ? "0" + n : n;
+      s = date.getSeconds();
+      seconds = s < 10 ? "0" + s : s;
+      "#{hour}:#{minutes}:#{seconds}"
+
+    greetings_from_new_user = (user, text, class_name) ->
+      add_new_message({user: user, text: text}, class_name)
+
+    add_new_message = (data, class_name) ->
+      user = data.user
+      message = data.text
+      class_name ?= ""
+      message_container = $('<div class="omnichat-message '+class_name+'">')
+      message_img = $('<div class="omnichat-user-img"><img src="'+user.img+'"></div>')
+      message_nick = $('<div class="omnichat-user-nick">' +user.nick+'</div>')
+      message_text = $('<div class="omnichat-user-text">' +message+'</div>')
 
       message_container.append(message_img)
       message_container.append(message_nick)
       message_container.append(message_text)
       $("#chat_messages_container").append(message_container)
+      $('body').get(0).scrollTop = 10000000
 
     connect = ->
       channel = $("#user_channel").attr "value"
-      client = new Client({
+      client = new OmniChat.Client({
+        host: "http://localhost:3000",
         user: get_user(),
-        onMessage: (data) ->
-          console.log("Message from #{data.nick}: #{data.text}")
+        onConnect: (data) ->
+          console.log("Succesfuly connected! sessionId: #{client.sessionId}")
+
+        onMyMessage: (htmlSafeText) ->
+          console.log("On My Message")
+          add_new_message({user: client.user, text: htmlSafeText}, "omnichat-me")
+
+        onNewMessage: (data) ->
+          console.log("On New Message")
           add_new_message(data)
+
+        onSomeoneConnect: (data) ->
+          console.log("#{data.user.nick} connected!")
+          greetings_from_new_user(data.user, "#{data.user.nick} connected!", "omnichat-connect")
+
+        onSomeoneDisconnect: (data) ->
+          console.log("#{data.user.nick} disconnected!")
+          greetings_from_new_user(data.user, "#{data.user.nick} disconnected!", "omnichat-disconnected")
       })
 
       client.connect channel, ->
@@ -85,9 +168,9 @@
     <div>
     <form id="chat_client">
       <p>
-        <label>Message:</label><br/>
-        <input type="text" name="message" id="message">
-        <input type="button" value="Send" id="send_button">
+        <label class="chat-message-label">Message:</label><br/>
+        <input type="text" name="message" id="message" class="chat-message-field">
+        <input type="button" value="Send" id="send_button" class="chat-message-send">
       </p>
     </form>
   </div>

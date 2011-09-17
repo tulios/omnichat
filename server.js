@@ -26,20 +26,33 @@
   });
   io.sockets.on('connection', function(socket) {
     socket.on('join', function(data) {
-      var channel;
-      socket.set('user', data);
-      channel = data.channel;
-      socket.join(channel);
-      return console.log("" + data.nick + " join to " + channel);
+      var user_data;
+      socket.set('session', data);
+      socket.join(data.channel);
+      user_data = {
+        id: socket.id,
+        connected_at: new Date().getTime(),
+        user: data.user
+      };
+      socket.emit("succesfully connected", user_data);
+      return socket.broadcast.to(data.channel).emit("user connected", user_data);
     });
-    return socket.on('message', function(data) {
-      return socket.get('user', function(err, user) {
-        console.log("broadcast to " + user.channel);
-        return socket.broadcast.to(user.channel).emit("new message", {
+    socket.on('message', function(data) {
+      return socket.get('session', function(err, session) {
+        return socket.broadcast.to(session.channel).emit("new message", {
           id: socket.id,
-          nick: user.nick,
-          img: user.img,
-          text: data.text
+          created_at: data.created_at,
+          text: data.text,
+          user: session.user
+        });
+      });
+    });
+    return socket.on('disconnect', function() {
+      return socket.get('session', function(err, session) {
+        return socket.broadcast.to(session.channel).emit("user disconnected", {
+          id: socket.id,
+          disconnected_at: new Date().getTime(),
+          user: session.user
         });
       });
     });
