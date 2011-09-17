@@ -129,7 +129,7 @@
 
         onSomeoneDisconnect: (data) ->
           console.log("#{data.user.nick} disconnected!")
-          greetings_from_new_user(data.user, "#{data.user.nick} disconnected!", "omnichat-disconnected")
+          greetings_from_new_user(data.user, "#{data.user.nick} disconnected!", "omnichat-disconnect")
       })
 
       client.connect channel, ->
