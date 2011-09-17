@@ -17,10 +17,6 @@
     return io.set('transports', ['websocket']);
   });
   io.configure('production', function() {
-    io.enable('browser client minification');
-    io.enable('browser client etag');
-    io.set('log level', 1);
-    io.set("transports", ['xhr-polling', 'flashsocket', 'jsonp-polling', 'htmlfile']);
     return io.set("polling duration", 10);
   });
   app.configure(function() {
