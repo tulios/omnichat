@@ -1,11 +1,15 @@
 (function() {
-  var ENV, HOST, PORT, app, express, io;
-  PORT = process.env.PORT || 3000;
-  HOST = process.env.HOST || null;
+  var DATABASE_HOST, ENV, PORT, app, db, express, io, mongo;
+  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   ENV = process.env.NODE_ENV || "development";
+  PORT = process.env.PORT || 3000;
+  DATABASE_HOST = process.env.MONGOHQ_URL || "mongodb://localhost:27017/omnichat";
   console.log("Environment: " + ENV);
   io = require('socket.io');
   express = require('express');
+  mongo = require('mongoskin');
+  db = mongo.db(DATABASE_HOST);
+  db.bind("rooms");
   app = express.createServer();
   app.listen(PORT, function() {
     var addr;
@@ -25,18 +29,58 @@
     return app.use(express.static(__dirname + '/public'));
   });
   io.sockets.on('connection', function(socket) {
-    socket.on('join', function(data) {
-      var user_data;
+    /*
+        join: (data)
+          It will be called when a new user try to join into a room. This socket will notify the user who
+          tries to connect with "succesfully connected" and will inform the connection timestamp, the id
+          of the session and give it back its JSON. It also will broadcast an "user connected" message to
+          notify everybody in the room. Finaly it will broadcast "list of users updated" and send the
+          same message for the author of the connection.
+    
+          data:
+            {
+              channel: String,
+              user: JSON <This JSON is defined by the client>
+            }
+      */    socket.on('join', function(data) {
+      var channel, user_data;
       socket.set('session', data);
-      socket.join(data.channel);
+      channel = data.channel;
+      socket.join(channel);
       user_data = {
         id: socket.id,
         connected_at: new Date().getTime(),
         user: data.user
       };
       socket.emit("succesfully connected", user_data);
-      return socket.broadcast.to(data.channel).emit("user connected", user_data);
+      socket.broadcast.to(channel).emit("user connected", user_data);
+      return db.rooms.find({
+        name: channel
+      }).toArray(__bind(function(err, rooms) {
+        var users;
+        users = [data.user];
+        if (rooms.length === 0) {
+          db.rooms.save({
+            name: channel,
+            users: users
+          });
+        } else {
+          users = users.concat(rooms[0].users);
+          db.rooms.update({
+            name: channel
+          }, {
+            '$push': {
+              users: data.user
+            }
+          });
+        }
+        socket.emit("list of users updated", users);
+        return socket.broadcast.to(channel).emit("list of users updated", users);
+      }, this));
     });
+    /*
+        message: (data)
+      */
     socket.on('message', function(data) {
       return socket.get('session', function(err, session) {
         return socket.broadcast.to(session.channel).emit("new message", {
@@ -47,8 +91,18 @@
         });
       });
     });
+    /*
+        disconnect: (data)
+      */
     return socket.on('disconnect', function() {
       return socket.get('session', function(err, session) {
+        db.rooms.update({
+          name: session.channel
+        }, {
+          '$pull': {
+            users: session.user
+          }
+        });
         return socket.broadcast.to(session.channel).emit("user disconnected", {
           id: socket.id,
           disconnected_at: new Date().getTime(),

@@ -8,7 +8,7 @@ body {
   padding: 5px 20px;
   margin-left: -8px;
   z-index: 2;
-  width: 100%;
+  width: 755px;
 }
 #chat_client .chat-message-field {
   width: 90%;
@@ -22,21 +22,70 @@ body {
   margin-bottom: 120px;
 }
 .omnichat-message {
-  border-bottom: 1px solid gray;
   padding-bottom: 5px;
   margin: 2px 0;
 }
 .omnichat-connect {
-  background: #C5FAE5;
+  color: #266E38;
 }
 .omnichat-connect .omnichat-user-nick,
 .omnichat-disconnect .omnichat-user-nick {
   display: none;
 }
 .omnichat-disconnect {
-  background: #F5ABAB;
+  color: #8A3636;
 }
 .omnichat-me {
-  border: 2px solid black;
-  padding: 2px;
+  font-weight: bold;
 }
+
+#chat_users_container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  overflow: auto;
+  height: 95%;
+  padding-bottom: 14px;
+
+  width: 250px;
+  border: 1px solid black;
+  padding: 10px;
+  background: #636363;
+  color: white;
+}
+
+.omnichat-user {
+  border: 1px solid white;
+  padding: 5px;
+  margin-bottom: 5px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

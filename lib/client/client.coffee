@@ -89,6 +89,7 @@ class Client
     @onMyMessage = settings.onMyMessage
     @onSomeoneConnect = settings.onSomeoneConnect
     @onSomeoneDisconnect = settings.onSomeoneDisconnect
+    @onListOfUsersUpdated = settings.onListOfUsersUpdated
 
   connect: (channel, beforeConnect) ->
     @channel = channel
@@ -117,6 +118,7 @@ class Client
     this._listen_to('new message', @onNewMessage)
     this._listen_to('user connected', @onSomeoneConnect)
     this._listen_to('user disconnected', @onSomeoneDisconnect)
+    this._listen_to('list of users updated', @onListOfUsersUpdated)
 
   _listen_to: (event, callback) ->
     @socket.on event, (data) =>

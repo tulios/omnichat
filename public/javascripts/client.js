@@ -19,86 +19,85 @@
       return string = Util.replace_all(string, "/", "&#x2F;");
     }
   };
-  /*
-    Arguments:
-      JSON:
-        host: String
-          If host is setted to omnichat will use it instead of the true host.
-        user: JSON
-          Your definition of an user, it will be passed for everyone who need to receive a message
-          from this user.
-        onConnect: Function(data)
-          This callback is called after the user connection is succesfuly established on the server.
-          It will receive a JSON object that contains your user JSON and a connected_at date, like:
-          {
-            id: "sessionId",
-            connected_at: Date,
-            user:{<your JSON data>}
-          }
-        onMyMessage: Function(messageHtmlSafe)
-          This callback is called after your message have been sent to the channel. It will receive
-          a html safe version of the passed message.
-        onNewMessage: Function(data)
-          This callback is called when a new message arives to the connected channel. It will receive
-          a JSON object that contains your user JSON and a text attribute, like:
-          {
-            id: "sessionId",
-            created_at: Date,
-            text: "msg",
-            user:{<your JSON data>}
-          }
-        onSomeoneConnect: Function(data)
-          This callback is called when a user connects to the server. It will receive a JSON object that
-          contains your user JSON and a connected_at date. Same data as "onConnect".
-        onSomeoneDisconnect: Function(data)
-          This callback is called when a user disconnects from the server. It will receive a JSON object
-          that contains your user JSON and a disconnected_at date, like:
-          {
-            id: "sessionId",
-            disconnected_at: Date,
-            user:{<your JSON data>}
-          }
-  
-    TIP: The client will have a sessionId attribute after succesfuly connects to the server, so, after
-         onConnect it is possible to knows the sessionId. e.g: client.sessionId.
-  
-    e.g:
-      var client = new OmniChat.Client({
-        env: "development",
-        user: {
-          // example data, use what your want
-          id: '123',
-          nick: 'myNick',
-          img: 'http://.../someImage.jpg'
-        },
-        onConnect: function(data) {
-          // fake code...
-          turnOnGreenLight();
-        },
-        onMyMessage: function(messageHtmlSafe) {
-          // fake code...
-          addMyMessage(messageHtmlSafe);
-        },
-        onNewMessage: function(data) {
-          // fake code...
-          var user = data.user;
-          var message = data.text;
-          addNewMessage(user, message);
-        },
-        onSomeoneConnect: function(data) {
-          // fake code...
-          var user = data.user;
-          notifyUserList(user, data.connected_at);
-        },
-        onSomeoneDisconnect: function(data) {
-          // fake code...
-          var user = data.user;
-          notifyUserList(user, data.disconnected_at);
-        }
-      });
-  */
   Client = (function() {
-    function Client(settings) {
+    /*
+        Arguments:
+          JSON:
+            host: String
+              If host is setted to omnichat will use it instead of the true host.
+            user: JSON
+              Your definition of an user, it will be passed for everyone who need to receive a message
+              from this user.
+            onConnect: Function(data)
+              This callback is called after the user connection is succesfuly established on the server.
+              It will receive a JSON object that contains your user JSON and a connected_at date, like:
+              {
+                id: "sessionId",
+                connected_at: Date,
+                user:{<your JSON data>}
+              }
+            onMyMessage: Function(messageHtmlSafe)
+              This callback is called after your message have been sent to the channel. It will receive
+              a html safe version of the passed message.
+            onNewMessage: Function(data)
+              This callback is called when a new message arives to the connected channel. It will receive
+              a JSON object that contains your user JSON and a text attribute, like:
+              {
+                id: "sessionId",
+                created_at: Date,
+                text: "msg",
+                user:{<your JSON data>}
+              }
+            onSomeoneConnect: Function(data)
+              This callback is called when a user connects to the server. It will receive a JSON object that
+              contains your user JSON and a connected_at date. Same data as "onConnect".
+            onSomeoneDisconnect: Function(data)
+              This callback is called when a user disconnects from the server. It will receive a JSON object
+              that contains your user JSON and a disconnected_at date, like:
+              {
+                id: "sessionId",
+                disconnected_at: Date,
+                user:{<your JSON data>}
+              }
+    
+        TIP: The client will have a sessionId attribute after succesfuly connects to the server, so, after
+             onConnect it is possible to knows the sessionId. e.g: client.sessionId.
+    
+        e.g:
+          var client = new OmniChat.Client({
+            env: "development",
+            user: {
+              // example data, use what your want
+              id: '123',
+              nick: 'myNick',
+              img: 'http://.../someImage.jpg'
+            },
+            onConnect: function(data) {
+              // fake code...
+              turnOnGreenLight();
+            },
+            onMyMessage: function(messageHtmlSafe) {
+              // fake code...
+              addMyMessage(messageHtmlSafe);
+            },
+            onNewMessage: function(data) {
+              // fake code...
+              var user = data.user;
+              var message = data.text;
+              addNewMessage(user, message);
+            },
+            onSomeoneConnect: function(data) {
+              // fake code...
+              var user = data.user;
+              notifyUserList(user, data.connected_at);
+            },
+            onSomeoneDisconnect: function(data) {
+              // fake code...
+              var user = data.user;
+              notifyUserList(user, data.disconnected_at);
+            }
+          });
+      */    function Client(settings) {
       if (settings.host) {
         this.host = settings.host;
       } else {
@@ -110,6 +109,7 @@
       this.onMyMessage = settings.onMyMessage;
       this.onSomeoneConnect = settings.onSomeoneConnect;
       this.onSomeoneDisconnect = settings.onSomeoneDisconnect;
+      this.onListOfUsersUpdated = settings.onListOfUsersUpdated;
     }
     Client.prototype.connect = function(channel, beforeConnect) {
       this.channel = channel;
@@ -142,7 +142,8 @@
       }, this));
       this._listen_to('new message', this.onNewMessage);
       this._listen_to('user connected', this.onSomeoneConnect);
-      return this._listen_to('user disconnected', this.onSomeoneDisconnect);
+      this._listen_to('user disconnected', this.onSomeoneDisconnect);
+      return this._listen_to('list of users updated', this.onListOfUsersUpdated);
     };
     Client.prototype._listen_to = function(event, callback) {
       return this.socket.on(event, __bind(function(data) {

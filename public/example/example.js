@@ -1,5 +1,5 @@
 (function() {
-  var add_new_message, channel, client, connect, format_date, get_user, greetings_from_new_user, setup_chat_client;
+  var add_new_message, channel, client, connect, format_date, get_user, greetings_from_new_user, refresh_users_list, remove_from_the_users_list, setup_chat_client;
   client = null;
   channel = null;
   setup_chat_client = function() {
@@ -55,7 +55,7 @@
     if (class_name == null) {
       class_name = "";
     }
-    message_container = $('<div class="omnichat-message ' + class_name + '">');
+    message_container = $('<div class="omnichat-message ' + class_name + '"></div>');
     message_img = $('<div class="omnichat-user-img"><img src="' + user.img + '"></div>');
     message_nick = $('<div class="omnichat-user-nick">' + user.nick + '</div>');
     message_text = $('<div class="omnichat-user-text">' + message + '</div>');
@@ -64,6 +64,25 @@
     message_container.append(message_text);
     $("#chat_messages_container").append(message_container);
     return $('body').get(0).scrollTop = 10000000;
+  };
+  remove_from_the_users_list = function(user) {
+    return $("#chat_users_container #user_" + user.nick).remove();
+  };
+  refresh_users_list = function(users_list) {
+    var user, user_div, user_img, user_name, users_container, _i, _len;
+    users_container = $("#chat_users_container");
+    for (_i = 0, _len = users_list.length; _i < _len; _i++) {
+      user = users_list[_i];
+      if ($("#chat_users_container #user_" + user.nick).length === 0) {
+        user_div = $('<div id="user_' + user.nick + '" class="omnichat-user"></div>');
+        user_img = $('<div class="omnichat-user-img"><img src="' + user.img + '"></div>');
+        user_name = $('<div class="omnichat-user-name">' + user.nick + '</div>');
+        user_div.append(user_img);
+        user_div.append(user_name);
+        users_container.append(user_div);
+      }
+    }
+    return users_container.show();
   };
   connect = function() {
     channel = $("#user_channel").attr("value");
@@ -90,7 +109,12 @@
       },
       onSomeoneDisconnect: function(data) {
         console.log("" + data.user.nick + " disconnected!");
-        return greetings_from_new_user(data.user, "" + data.user.nick + " disconnected!", "omnichat-disconnect");
+        greetings_from_new_user(data.user, "" + data.user.nick + " disconnected!", "omnichat-disconnect");
+        return remove_from_the_users_list(data.user);
+      },
+      onListOfUsersUpdated: function(data) {
+        console.log("list of users updated");
+        return refresh_users_list(data);
       }
     });
     return client.connect(channel, function() {
