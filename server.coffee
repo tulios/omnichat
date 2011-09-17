@@ -4,6 +4,10 @@ HOST = process.env.HOST || null
 io = require 'socket.io'
 express = require 'express'
 
+app = express.createServer()
+app.listen(PORT)
+io = io.listen(app)
+
 io.configure 'development', ->
   io.set 'transports', ['websocket']
 
@@ -12,10 +16,6 @@ io.configure 'production', ->
   io.enable 'browser client etag'
   io.set 'log level', 1
   io.set 'transports', ['websocket', 'flashsocket', 'htmlfile', 'xhr-polling', 'jsonp-polling']
-
-app = express.createServer()
-app.listen(PORT)
-io = io.listen(app)
 
 app.configure ->
   app.use(express.static(__dirname + '/public'))
