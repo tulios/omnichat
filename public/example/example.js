@@ -87,6 +87,7 @@
   connect = function() {
     channel = $("#user_channel").attr("value");
     client = new OmniChat.Client({
+      host: "http://localhost:3000",
       user: get_user(),
       onConnect: function(data) {
         return console.log("Succesfuly connected! sessionId: " + client.sessionId);
