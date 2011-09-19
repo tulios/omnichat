@@ -44,7 +44,6 @@ class Client
 
     e.g:
       var client = new OmniChat.Client({
-        env: "development",
         user: {
           // example data, use what your want
           id: '123',
