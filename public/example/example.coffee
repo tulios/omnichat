@@ -68,7 +68,6 @@ refresh_users_list = (users_list) ->
 connect = ->
   channel = $("#user_channel").attr "value"
   client = new OmniChat.Client({
-    host: "http://localhost:3000",
     user: get_user(),
     onConnect: (data) ->
       console.log("Succesfuly connected! sessionId: #{client.sessionId}")

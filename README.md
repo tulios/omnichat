@@ -2,20 +2,25 @@
 
 ## Instalando
 
-  1 - Instalar node.js  
+  1 - Instalar node.js e o MongoDB
     [https://github.com/joyent/node/wiki/Installation](https://github.com/joyent/node/wiki/Installation)  
+    [http://fastdl.mongodb.org/osx/mongodb-osx-x86_64-1.8.3.tgz](http://fastdl.mongodb.org/osx/mongodb-osx-x86_64-1.8.3.tgz)
   
   2 - Instalar coffeeScript  
     npm install -g coffee-script  
   
-  3 -
-    npm install express socket.io  
+  3 - Instalar as dependências do projeto
+    npm install express socket.io mongoskin
 
 ## Subindo o server
 
   Na pasta do projeto faça:
     
-  ➔ coffee server.coffee  
+  ➔ coffee server.coffee
+
+## Subindo o mongoDB
+
+  ➔ mongod
     
 ## Usando
 
