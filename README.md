@@ -2,9 +2,9 @@
 
 ## Instalando
 
-  1 - Instalar node.js e o MongoDB
+  1 - Instalar node.js e o MongoDB  
     [https://github.com/joyent/node/wiki/Installation](https://github.com/joyent/node/wiki/Installation)  
-    [http://fastdl.mongodb.org/osx/mongodb-osx-x86_64-1.8.3.tgz](http://fastdl.mongodb.org/osx/mongodb-osx-x86_64-1.8.3.tgz)
+    [http://fastdl.mongodb.org/osx/mongodb-osx-x86_64-1.8.3.tgz](http://fastdl.mongodb.org/osx/mongodb-osx-x86_64-1.8.3.tgz)  
   
   2 - Instalar coffeeScript  
     npm install -g coffee-script  
@@ -27,7 +27,7 @@
   Abra:  
     http://localhost:3000/example/index.html
   
-  Heroku:
+  Heroku:  
     http://omnichat.herokuapp.com/example/index.html
 
 ## Compilando
