@@ -3,7 +3,7 @@
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   ENV = process.env.NODE_ENV || "development";
   PORT = process.env.PORT || 3000;
-  DATABASE_HOST = process.env.MONGOHQ_URL || "mongodb://localhost:27017/omnichat";
+  DATABASE_HOST = process.env.MONGOLAB_URI || "mongodb://localhost:27017/omnichat";
   console.log("Environment: " + ENV);
   io = require('socket.io');
   express = require('express');
