@@ -66,17 +66,6 @@ io.sockets.on 'connection', (socket) ->
       socket.emit "list of users updated", room.users
       socket.broadcast.to(channel).emit("list of users updated", room.users)
 
-    # Room.with(db).find {name: channel}, (rooms) =>
-    #   users = [data.user]
-    #   if rooms.length == 0
-    #     Room.with(db).save {name: channel, users: users}
-    #   else
-    #     users = users.concat rooms[0].users
-    #     Room.with(db).add_user {name: channel}, data.user
-    #
-    #   socket.emit "list of users updated", users
-    #   socket.broadcast.to(channel).emit("list of users updated", users)
-
   ###
     message: (data)
   ###
