@@ -31,7 +31,35 @@
     http://omnichat.herokuapp.com/example/index.html
 
 ## Compilando
-    
-  coffee --watch --join public/javascripts/client.js --compile lib/client/util.coffee lib/client/client.coffee  
-  coffee --watch --compile server.coffee lib/models/*.coffee public/example/*.coffee  
+  
+  # Compilando todo o diretório lib
+  coffee -o build/ -c lib/
+  
+  # Com watcher (dev)
+  coffee --watch -o build/ -c lib/
+  
+  coffee --join public/javascripts/client.js --compile lib/client/util.coffee lib/client/client.coffee  
+  coffee --watch --compile public/example/*.coffee  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   

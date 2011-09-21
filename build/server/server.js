@@ -8,9 +8,9 @@
   io = require('socket.io');
   express = require('express');
   mongo = require('mongoskin');
-  Room = require('./lib/models/room');
-  Account = require('./lib/models/account');
-  AuthenticationHandler = require('./lib/authentication/handler');
+  Room = require('./../models/room');
+  Account = require('./../models/account');
+  AuthenticationHandler = require('./../authentication/handler');
   db = mongo.db(DATABASE_HOST);
   db.bind("rooms");
   db.bind("accounts");
@@ -37,7 +37,7 @@
     }, this));
   });
   app.configure(function() {
-    return app.use(express.static(__dirname + '/public'));
+    return app.use(express.static(__dirname + '/../../public'));
   });
   io.sockets.on('connection', function(socket) {
     /*

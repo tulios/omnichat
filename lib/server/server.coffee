@@ -7,9 +7,9 @@ console.log("Environment: #{process.env.NODE_ENV}")
 io = require 'socket.io'
 express = require 'express'
 mongo = require 'mongoskin'
-Room = require './lib/models/room'
-Account = require './lib/models/account'
-AuthenticationHandler = require './lib/authentication/handler'
+Room = require './../models/room'
+Account = require './../models/account'
+AuthenticationHandler = require './../authentication/handler'
 
 db = mongo.db(DATABASE_HOST)
 db.bind("rooms")
@@ -39,7 +39,7 @@ io.configure 'production', ->
     auth_handler.handle(handshakeData, callback)
 
 app.configure ->
-  app.use(express.static(__dirname + '/public'))
+  app.use(express.static(__dirname + '/../../public'))
 
 io.sockets.on 'connection', (socket) ->
   ###
