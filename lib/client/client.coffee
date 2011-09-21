@@ -4,6 +4,8 @@ class Client
       JSON:
         host: String
           If host is set to omnichat will use it instead of the true host.
+        key: String
+          TODO: write something...
         user: JSON
           Your definition of an user, it will be passed for everyone who need to receive a message
           from this user.
@@ -77,10 +79,11 @@ class Client
       });
   ###
   constructor: (settings) ->
+    @key = settings.key
     if settings.host
-      @host = settings.host
+      @host = "#{settings.host}?key=#{@key}"
     else
-      @host = "http://omnichat.herokuapp.com"
+      @host = "http://omnichat.herokuapp.com?key=#{@key}"
 
     @user = settings.user
     @onConnect = settings.onConnect

@@ -1,10 +1,10 @@
 Room = {
-  new: (name, users) ->
-    {name: name, users: users}
-
   with: (db) ->
     @db = db
     this
+
+  new: (name, users) ->
+    {name: name, users: users}
 
   find: (query, callback) ->
     @db.rooms.find(query).toArray (err, rooms) =>

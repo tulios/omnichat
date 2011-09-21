@@ -25,6 +25,8 @@
           JSON:
             host: String
               If host is set to omnichat will use it instead of the true host.
+            key: String
+              TODO: write something...
             user: JSON
               Your definition of an user, it will be passed for everyone who need to receive a message
               from this user.
@@ -97,10 +99,11 @@
             }
           });
       */    function Client(settings) {
+      this.key = settings.key;
       if (settings.host) {
-        this.host = settings.host;
+        this.host = "" + settings.host + "?key=" + this.key;
       } else {
-        this.host = "http://omnichat.herokuapp.com";
+        this.host = "http://omnichat.herokuapp.com?key=" + this.key;
       }
       this.user = settings.user;
       this.onConnect = settings.onConnect;

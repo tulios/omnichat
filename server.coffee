@@ -1,16 +1,20 @@
-ENV = process.env.NODE_ENV || "development"
+process.env.NODE_ENV = process.env.NODE_ENV || "development"
 PORT = process.env.PORT || 3000
 DATABASE_HOST = process.env.MONGOLAB_URI || "mongodb://localhost:27017/omnichat"
 
-console.log("Environment: #{ENV}")
+console.log("Environment: #{process.env.NODE_ENV}")
 
 io = require 'socket.io'
 express = require 'express'
 mongo = require 'mongoskin'
 Room = require './lib/models/room'
+Account = require './lib/models/account'
+AuthenticationHandler = require './lib/authentication/handler'
 
 db = mongo.db(DATABASE_HOST)
 db.bind("rooms")
+db.bind("accounts")
+auth_handler = new AuthenticationHandler(db)
 
 app = express.createServer()
 
@@ -21,7 +25,9 @@ app.listen PORT, ->
 io = io.listen(app)
 
 io.configure 'development', ->
-  io.set 'transports', ['websocket']
+  io.set "transports", ['xhr-polling', 'jsonp-polling', 'htmlfile']
+  io.set 'authorization', (handshakeData, callback) =>
+    auth_handler.handle(handshakeData, callback)
 
 io.configure 'production', ->
   io.set 'log level', 1
@@ -29,6 +35,8 @@ io.configure 'production', ->
   # 'flashsocket' => nao suportado pelo heroku
   io.set "transports", ['xhr-polling', 'jsonp-polling', 'htmlfile']
   io.set "polling duration", 20
+  io.set 'authorization', (handshakeData, callback) =>
+    auth_handler.handle(handshakeData, callback)
 
 app.configure ->
   app.use(express.static(__dirname + '/public'))
@@ -49,9 +57,9 @@ io.sockets.on 'connection', (socket) ->
         }
   ###
   socket.on 'join', (data) ->
+    account = socket.handshake.account
     socket.set 'session', data
-    channel = data.channel
-    socket.join(channel)
+    socket.join(data.channel)
 
     user_data = {
       id: socket.id,
@@ -60,11 +68,11 @@ io.sockets.on 'connection', (socket) ->
     }
 
     socket.emit "succesfully connected", user_data
-    socket.broadcast.to(channel).emit("user connected", user_data)
+    socket.broadcast.to(data.channel).emit("user connected", user_data)
 
-    Room.with(db).find_or_create_and_add_user channel, data.user, (room) =>
+    Room.with(db).find_or_create_and_add_user data.channel, data.user, (room) =>
       socket.emit "list of users updated", room.users
-      socket.broadcast.to(channel).emit("list of users updated", room.users)
+      socket.broadcast.to(data.channel).emit("list of users updated", room.users)
 
   ###
     message: (data)
