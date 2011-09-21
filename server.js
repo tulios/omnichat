@@ -1,5 +1,5 @@
 (function() {
-  var DATABASE_HOST, ENV, PORT, app, db, express, io, mongo;
+  var DATABASE_HOST, ENV, PORT, Room, app, db, express, io, mongo;
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   ENV = process.env.NODE_ENV || "development";
   PORT = process.env.PORT || 3000;
@@ -8,6 +8,7 @@
   io = require('socket.io');
   express = require('express');
   mongo = require('mongoskin');
+  Room = require('./lib/models/room');
   db = mongo.db(DATABASE_HOST);
   db.bind("rooms");
   app = express.createServer();
@@ -23,7 +24,7 @@
   io.configure('production', function() {
     io.set('log level', 1);
     io.set("transports", ['xhr-polling', 'jsonp-polling', 'htmlfile']);
-    return io.set("polling duration", 10);
+    return io.set("polling duration", 20);
   });
   app.configure(function() {
     return app.use(express.static(__dirname + '/public'));
@@ -54,28 +55,9 @@
       };
       socket.emit("succesfully connected", user_data);
       socket.broadcast.to(channel).emit("user connected", user_data);
-      return db.rooms.find({
-        name: channel
-      }).toArray(__bind(function(err, rooms) {
-        var users;
-        users = [data.user];
-        if (rooms.length === 0) {
-          db.rooms.save({
-            name: channel,
-            users: users
-          });
-        } else {
-          users = users.concat(rooms[0].users);
-          db.rooms.update({
-            name: channel
-          }, {
-            '$push': {
-              users: data.user
-            }
-          });
-        }
-        socket.emit("list of users updated", users);
-        return socket.broadcast.to(channel).emit("list of users updated", users);
+      return Room["with"](db).find_or_create_and_add_user(channel, data.user, __bind(function(room) {
+        socket.emit("list of users updated", room.users);
+        return socket.broadcast.to(channel).emit("list of users updated", room.users);
       }, this));
     });
     /*

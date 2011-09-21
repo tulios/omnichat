@@ -7,6 +7,7 @@ console.log("Environment: #{ENV}")
 io = require 'socket.io'
 express = require 'express'
 mongo = require 'mongoskin'
+Room = require './lib/models/room'
 
 db = mongo.db(DATABASE_HOST)
 db.bind("rooms")
@@ -27,7 +28,7 @@ io.configure 'production', ->
   # 'websocket' => nao suportado pelo heroku
   # 'flashsocket' => nao suportado pelo heroku
   io.set "transports", ['xhr-polling', 'jsonp-polling', 'htmlfile']
-  io.set "polling duration", 10
+  io.set "polling duration", 20
 
 app.configure ->
   app.use(express.static(__dirname + '/public'))
@@ -61,16 +62,20 @@ io.sockets.on 'connection', (socket) ->
     socket.emit "succesfully connected", user_data
     socket.broadcast.to(channel).emit("user connected", user_data)
 
-    db.rooms.find({name: channel}).toArray (err, rooms) =>
-      users = [data.user]
-      if rooms.length == 0
-        db.rooms.save {name: channel, users: users}
-      else
-        users = users.concat rooms[0].users
-        db.rooms.update {name: channel}, {'$push': {users: data.user}}
+    Room.with(db).find_or_create_and_add_user channel, data.user, (room) =>
+      socket.emit "list of users updated", room.users
+      socket.broadcast.to(channel).emit("list of users updated", room.users)
 
-      socket.emit "list of users updated", users
-      socket.broadcast.to(channel).emit("list of users updated", users)
+    # Room.with(db).find {name: channel}, (rooms) =>
+    #   users = [data.user]
+    #   if rooms.length == 0
+    #     Room.with(db).save {name: channel, users: users}
+    #   else
+    #     users = users.concat rooms[0].users
+    #     Room.with(db).add_user {name: channel}, data.user
+    #
+    #   socket.emit "list of users updated", users
+    #   socket.broadcast.to(channel).emit("list of users updated", users)
 
   ###
     message: (data)

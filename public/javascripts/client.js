@@ -24,7 +24,7 @@
         Arguments:
           JSON:
             host: String
-              If host is setted to omnichat will use it instead of the true host.
+              If host is set to omnichat will use it instead of the true host.
             user: JSON
               Your definition of an user, it will be passed for everyone who need to receive a message
               from this user.
@@ -65,7 +65,6 @@
     
         e.g:
           var client = new OmniChat.Client({
-            env: "development",
             user: {
               // example data, use what your want
               id: '123',

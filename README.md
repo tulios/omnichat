@@ -33,5 +33,5 @@
 ## Compilando
     
   coffee --watch --join public/javascripts/client.js --compile lib/client/util.coffee lib/client/client.coffee  
-  coffee --watch --compile server.coffee public/example/example.coffee  
+  coffee --watch --compile server.coffee lib/models/room.coffee public/example/example.coffee  
   
