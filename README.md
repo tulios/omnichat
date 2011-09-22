@@ -32,11 +32,11 @@
 
 ## Compilando
   
-  # Compilando todo o diretório lib
-  coffee -o build/ -c lib/
+  # Compilando todo o diretório lib  
+  coffee -o build/ -c lib/  
   
-  # Com watcher (dev)
-  coffee --watch -o build/ -c lib/
+  # Com watcher (dev)  
+  coffee --watch -o build/ -c lib/  
   
   coffee --join public/javascripts/client.js --compile lib/client/util.coffee lib/client/client.coffee  
   coffee --watch --compile public/example/*.coffee  
