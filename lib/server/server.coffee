@@ -7,6 +7,7 @@ console.log("Environment: #{process.env.NODE_ENV}")
 io = require 'socket.io'
 express = require 'express'
 mongo = require 'mongoskin'
+Sanitizer = require 'sanitizer'
 Room = require './../models/room'
 Account = require './../models/account'
 AuthenticationHandler = require './../authentication/handler'
@@ -82,7 +83,7 @@ io.sockets.on 'connection', (socket) ->
       socket.broadcast.to(session.channel).emit("new message", {
         id: socket.id,
         created_at: data.created_at,
-        text: data.text,
+        text: Sanitizer.escape(data.text),
         user: session.user
       })
 

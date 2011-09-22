@@ -1,5 +1,5 @@
 (function() {
-  var Account, AuthenticationHandler, DATABASE_HOST, PORT, Room, app, auth_handler, db, express, io, mongo;
+  var Account, AuthenticationHandler, DATABASE_HOST, PORT, Room, Sanitizer, app, auth_handler, db, express, io, mongo;
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   process.env.NODE_ENV = process.env.NODE_ENV || "development";
   PORT = process.env.PORT || 3000;
@@ -8,6 +8,7 @@
   io = require('socket.io');
   express = require('express');
   mongo = require('mongoskin');
+  Sanitizer = require('sanitizer');
   Room = require('./../models/room');
   Account = require('./../models/account');
   AuthenticationHandler = require('./../authentication/handler');
@@ -78,7 +79,7 @@
         return socket.broadcast.to(session.channel).emit("new message", {
           id: socket.id,
           created_at: data.created_at,
-          text: data.text,
+          text: Sanitizer.escape(data.text),
           user: session.user
         });
       });
