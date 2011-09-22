@@ -116,6 +116,9 @@
       onListOfUsersUpdated: function(data) {
         console.log("list of users updated");
         return refresh_users_list(data);
+      },
+      onError: function(reason) {
+        return console.log("Falha ao se conectar: " + reason);
       }
     });
     return client.connect(channel, function() {

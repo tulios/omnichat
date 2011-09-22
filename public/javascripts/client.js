@@ -26,7 +26,7 @@
             host: String
               If host is set to omnichat will use it instead of the true host.
             key: String
-              TODO: write something...
+              The key received from the server. Required.
             user: JSON
               Your definition of an user, it will be passed for everyone who need to receive a message
               from this user.
@@ -96,26 +96,29 @@
               // fake code...
               var user = data.user;
               notifyUserList(user, data.disconnected_at);
+            },
+            onError: function(reason) {
+              // fake code...
+              console.log(reason)
             }
           });
       */    function Client(settings) {
       this.key = settings.key;
+      if (!this.key) {
+        throw new Error("OmniChat::Client => Key is required for connection! Please, read the documentation");
+      }
       if (settings.host) {
         this.host = "" + settings.host + "?key=" + this.key;
       } else {
         this.host = "http://omnichat.herokuapp.com?key=" + this.key;
       }
       this.user = settings.user;
-      this.onConnect = settings.onConnect;
-      this.onNewMessage = settings.onNewMessage;
-      this.onMyMessage = settings.onMyMessage;
-      this.onSomeoneConnect = settings.onSomeoneConnect;
-      this.onSomeoneDisconnect = settings.onSomeoneDisconnect;
-      this.onListOfUsersUpdated = settings.onListOfUsersUpdated;
+      this.settings = settings;
     }
     Client.prototype.connect = function(channel, beforeConnect) {
       this.channel = channel;
       this.socket = io.connect(this.host);
+      this._listen_to('error', this.settings.onError);
       return this.socket.on("connect", __bind(function() {
         this.socket.emit("join", {
           user: this.user,
@@ -138,14 +141,14 @@
     Client.prototype._listen_events = function() {
       this._listen_to('succesfully connected', __bind(function(data) {
         this.sessionId = data.id;
-        if (this.onConnect) {
-          return this.onConnect(data);
+        if (this.settings.onConnect) {
+          return this.settings.onConnect(data);
         }
       }, this));
-      this._listen_to('new message', this.onNewMessage);
-      this._listen_to('user connected', this.onSomeoneConnect);
-      this._listen_to('user disconnected', this.onSomeoneDisconnect);
-      return this._listen_to('list of users updated', this.onListOfUsersUpdated);
+      this._listen_to('new message', this.settings.onNewMessage);
+      this._listen_to('user connected', this.settings.onSomeoneConnect);
+      this._listen_to('user disconnected', this.settings.onSomeoneDisconnect);
+      return this._listen_to('list of users updated', this.settings.onListOfUsersUpdated);
     };
     Client.prototype._listen_to = function(event, callback) {
       return this.socket.on(event, __bind(function(data) {

@@ -94,6 +94,9 @@ connect = ->
     onListOfUsersUpdated: (data) ->
       console.log("list of users updated")
       refresh_users_list(data)
+
+    onError: (reason) ->
+      console.log("Falha ao se conectar: #{reason}")
   })
 
   client.connect channel, ->

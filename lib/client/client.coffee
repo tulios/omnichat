@@ -5,7 +5,7 @@ class Client
         host: String
           If host is set to omnichat will use it instead of the true host.
         key: String
-          TODO: write something...
+          The key received from the server. Required.
         user: JSON
           Your definition of an user, it will be passed for everyone who need to receive a message
           from this user.
@@ -40,6 +40,8 @@ class Client
             disconnected_at: Date,
             user:{<your JSON data>}
           }
+        onError: Function(reason)
+          This callback is called, usually, when a authorization error occurs.
 
     TIP: The client will have a sessionId attribute after succesfuly connects to the server, so, after
          onConnect it is possible to knows the sessionId. e.g: client.sessionId.
@@ -75,27 +77,30 @@ class Client
           // fake code...
           var user = data.user;
           notifyUserList(user, data.disconnected_at);
+        },
+        onError: function(reason) {
+          // fake code...
+          console.log(reason)
         }
       });
   ###
   constructor: (settings) ->
     @key = settings.key
+    throw new Error("OmniChat::Client => Key is required for connection! Please, read the documentation") unless @key
+
     if settings.host
       @host = "#{settings.host}?key=#{@key}"
     else
       @host = "http://omnichat.herokuapp.com?key=#{@key}"
 
     @user = settings.user
-    @onConnect = settings.onConnect
-    @onNewMessage = settings.onNewMessage
-    @onMyMessage = settings.onMyMessage
-    @onSomeoneConnect = settings.onSomeoneConnect
-    @onSomeoneDisconnect = settings.onSomeoneDisconnect
-    @onListOfUsersUpdated = settings.onListOfUsersUpdated
+    @settings = settings
 
   connect: (channel, beforeConnect) ->
     @channel = channel
     @socket = io.connect(@host)
+
+    this._listen_to('error', @settings.onError)
     @socket.on "connect", =>
       @socket.emit "join", {
         user: @user,
@@ -115,12 +120,12 @@ class Client
   _listen_events: ->
     this._listen_to 'succesfully connected', (data) =>
       @sessionId = data.id
-      @onConnect(data) if @onConnect
+      @settings.onConnect(data) if @settings.onConnect
 
-    this._listen_to('new message', @onNewMessage)
-    this._listen_to('user connected', @onSomeoneConnect)
-    this._listen_to('user disconnected', @onSomeoneDisconnect)
-    this._listen_to('list of users updated', @onListOfUsersUpdated)
+    this._listen_to('new message', @settings.onNewMessage)
+    this._listen_to('user connected', @settings.onSomeoneConnect)
+    this._listen_to('user disconnected', @settings.onSomeoneDisconnect)
+    this._listen_to('list of users updated', @settings.onListOfUsersUpdated)
 
   _listen_to: (event, callback) ->
     @socket.on event, (data) =>
