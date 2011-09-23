@@ -128,6 +128,14 @@
         return afterJoin();
       }, this));
     };
+    /*
+        Arguments:
+          text: String.
+            The text that will be sent.
+    
+        e.g:
+          client.send_message("My message");
+      */
     Client.prototype.send_message = function(text) {
       text = Util.html_safe(text);
       this.socket.emit("message", {

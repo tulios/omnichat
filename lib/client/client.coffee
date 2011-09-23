@@ -126,6 +126,14 @@ class Client
       this._listen_events()
       afterJoin()
 
+  ###
+    Arguments:
+      text: String.
+        The text that will be sent.
+
+    e.g:
+      client.send_message("My message");
+  ###
   send_message: (text) ->
     text = Util.html_safe(text)
     @socket.emit "message", {
