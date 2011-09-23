@@ -115,7 +115,7 @@ class Client
       created_at: new Date().getTime(),
       text: text
     }
-    @onMyMessage(text) if @onMyMessage
+    @settings.onMyMessage(text) if @settings.onMyMessage
 
   _listen_events: ->
     this._listen_to 'succesfully connected', (data) =>

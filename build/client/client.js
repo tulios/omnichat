@@ -118,8 +118,8 @@
         created_at: new Date().getTime(),
         text: text
       });
-      if (this.onMyMessage) {
-        return this.onMyMessage(text);
+      if (this.settings.onMyMessage) {
+        return this.settings.onMyMessage(text);
       }
     };
     Client.prototype._listen_events = function() {

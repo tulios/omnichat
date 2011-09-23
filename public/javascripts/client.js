@@ -61,6 +61,8 @@
                 disconnected_at: Date,
                 user:{<your JSON data>}
               }
+            onError: Function(reason)
+              This callback is called, usually, when a authorization error occurs.
     
         TIP: The client will have a sessionId attribute after succesfuly connects to the server, so, after
              onConnect it is possible to knows the sessionId. e.g: client.sessionId.
@@ -134,8 +136,8 @@
         created_at: new Date().getTime(),
         text: text
       });
-      if (this.onMyMessage) {
-        return this.onMyMessage(text);
+      if (this.settings.onMyMessage) {
+        return this.settings.onMyMessage(text);
       }
     };
     Client.prototype._listen_events = function() {
