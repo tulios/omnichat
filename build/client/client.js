@@ -104,7 +104,19 @@
       this.user = settings.user;
       this.settings = settings;
     }
-    Client.prototype.connect = function(beforeConnect) {
+    /*
+        Arguments:
+          afterJoin: Function.
+            This callback is called after joining into a channel
+    
+        e.g:
+          client.connect(function(){
+            // fake code...
+            hideWaitRoom();
+            showConnectedScreen();
+          });
+      */
+    Client.prototype.connect = function(afterJoin) {
       this.socket = io.connect(this.host);
       this._listen_to('error', this.settings.onError);
       return this.socket.on("connect", __bind(function() {
@@ -113,7 +125,7 @@
           channel: this.channel
         });
         this._listen_events();
-        return beforeConnect();
+        return afterJoin();
       }, this));
     };
     Client.prototype.send_message = function(text) {

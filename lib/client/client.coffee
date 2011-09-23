@@ -102,7 +102,19 @@ class Client
     @user = settings.user
     @settings = settings
 
-  connect: (beforeConnect) ->
+  ###
+    Arguments:
+      afterJoin: Function.
+        This callback is called after joining into a channel
+
+    e.g:
+      client.connect(function(){
+        // fake code...
+        hideWaitRoom();
+        showConnectedScreen();
+      });
+  ###
+  connect: (afterJoin) ->
     @socket = io.connect(@host)
 
     this._listen_to('error', @settings.onError)
@@ -112,7 +124,7 @@ class Client
         channel: @channel
       }
       this._listen_events()
-      beforeConnect()
+      afterJoin()
 
   send_message: (text) ->
     text = Util.html_safe(text)
