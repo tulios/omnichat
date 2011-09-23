@@ -10,8 +10,8 @@
     npm install -g coffee-script  
   
   3 - Instalar as dependências do projeto
-    npm install express socket.io mongoskin
-
+    npm install express socket.io mongoskin hashlib sanitizer
+                           
 ## Subindo o server
 
   Na pasta do projeto faça:
@@ -21,7 +21,11 @@
 ## Subindo o mongoDB
 
   ➔ mongod
-    
+  
+## Migrando o banco
+
+  ➔ mongo migrations/001_create_omnichat_account.js  
+     
 ## Usando
 
   Abra:  

@@ -1,3 +1,5 @@
+HashLib = require "hashlib"
+
 Account = {
 
   with: (db) ->
@@ -5,7 +7,12 @@ Account = {
     this
 
   create: (email, hosts) ->
-    @db.accounts.save {key: key, email: email, hosts: hosts, created_at: new Date().getTime()}
+    created_at = new Date().getTime()
+    key = this.generate_key("#{email}|#{created_at}")
+    @db.accounts.save {key: key, email: email, hosts: hosts, created_at: created_at}
+
+  generate_key: (string) ->
+    HashLib.sha1(string).toUpperCase()
 
   find: (query, callback) ->
     @db.accounts.find(query).toArray (err, accounts) =>
