@@ -27,6 +27,13 @@
         }
       });
     },
+    remove_user: function(query, user) {
+      return this.db.rooms.update(query, {
+        '$pull': {
+          users: user
+        }
+      });
+    },
     find_or_create_and_add_user: function(channel, user, callback) {
       return this.find({
         name: channel
@@ -44,6 +51,9 @@
         }
         return callback(room);
       }, this));
+    },
+    get_room_name: function(json) {
+      return "" + json.key + "-" + json.channel;
     }
   };
   module.exports = Room;

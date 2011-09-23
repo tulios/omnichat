@@ -7,9 +7,9 @@ console.log("Environment: #{process.env.NODE_ENV}")
 io = require 'socket.io'
 express = require 'express'
 mongo = require 'mongoskin'
-Sanitizer = require 'sanitizer'
 Room = require './../models/room'
 Account = require './../models/account'
+Message = require './../models/message'
 AuthenticationHandler = require './../authentication/handler'
 
 db = mongo.db(DATABASE_HOST)
@@ -59,42 +59,58 @@ io.sockets.on 'connection', (socket) ->
   ###
   socket.on 'join', (data) ->
     account = socket.handshake.account
-    socket.set 'session', data
-    socket.join(data.channel)
+    data.room_name = Room.get_room_name({channel: data.channel, key: account.key})
 
-    user_data = {
-      id: socket.id,
-      connected_at: new Date().getTime(),
-      user: data.user
-    }
+    socket.set 'session', data
+    socket.join(data.room_name)
+
+    user_data = Message.through(socket).new_user_data(data)
 
     socket.emit "succesfully connected", user_data
-    socket.broadcast.to(data.channel).emit("user connected", user_data)
+    socket.broadcast.to(data.room_name).emit("user connected", Message.user_connected(user_data))
 
-    Room.with(db).find_or_create_and_add_user data.channel, data.user, (room) =>
-      socket.emit "list of users updated", room.users
-      socket.broadcast.to(data.channel).emit("list of users updated", room.users)
+    Room.with(db).find_or_create_and_add_user data.room_name, data.user, (room) =>
+      message = Message.list_of_users_updated(room)
+      socket.emit "list of users updated", message
+      socket.broadcast.to(data.room_name).emit("list of users updated", message)
 
   ###
     message: (data)
   ###
   socket.on 'message', (data) ->
     socket.get 'session', (err, session) ->
-      socket.broadcast.to(session.channel).emit("new message", {
-        id: socket.id,
-        created_at: data.created_at,
-        text: Sanitizer.escape(data.text),
-        user: session.user
-      })
+      socket.broadcast.to(session.room_name).emit("new message", Message.through(socket).new_message(data, session))
 
   ###
     disconnect: (data)
   ###
   socket.on 'disconnect', ->
     socket.get 'session', (err, session) ->
-      db.rooms.update {name: session.channel}, {'$pull': {users: session.user}}
-      socket.broadcast.to(session.channel).emit("user disconnected", {
-        id: socket.id,
-        disconnected_at: new Date().getTime(),
-        user: session.user
-      })
+      Room.with(db).remove_user {name: session.room_name}, session.user
+      socket.broadcast.to(session.room_name).emit("user disconnected", Message.through(socket).user_disconnected(session))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

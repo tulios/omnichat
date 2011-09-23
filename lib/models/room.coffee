@@ -16,6 +16,9 @@ Room = {
   add_user: (query, user) ->
     @db.rooms.update query, {'$push': {users: user}}
 
+  remove_user: (query, user) ->
+    @db.rooms.update query, {'$pull': {users: user}}
+
   find_or_create_and_add_user: (channel, user, callback) ->
     this.find {name: channel}, (rooms) =>
       room = this.new(channel, [user])
@@ -27,6 +30,9 @@ Room = {
         room.users = room.users.concat(user)
 
       callback(room)
+
+   get_room_name: (json) ->
+     "#{json.key}-#{json.channel}"
 }
 
 module.exports = Room
