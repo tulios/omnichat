@@ -66,7 +66,6 @@ refresh_users_list = (users_list) ->
   users_container.show()
 
 connect = ->
-  channel = $("#user_channel").attr "value"
   client = new OmniChat.Client({
     host: "http://localhost:3000",
     key: "C3747C316C161E4C11A18CD1F8C2456F85EFBC9D",
@@ -99,7 +98,7 @@ connect = ->
       console.log("Falha ao se conectar: #{reason}")
   })
 
-  client.connect channel, ->
+  client.connect ->
     $("#connect_form").hide();
     $("#chat_panel").show();
     setup_chat_client()

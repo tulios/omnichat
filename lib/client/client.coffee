@@ -6,6 +6,9 @@ class Client
           If host is set to omnichat will use it instead of the true host.
         key: String
           The key received from the server. Required.
+        channel: String
+          The name of the channel. This is the name that will agregate all the users. Leave it blank
+          if you want the pages to serve as aggregator address.
         user: JSON
           Your definition of an user, it will be passed for everyone who need to receive a message
           from this user.
@@ -48,6 +51,7 @@ class Client
 
     e.g:
       var client = new OmniChat.Client({
+        key: "MyKey...",
         user: {
           // example data, use what your want
           id: '123',
@@ -88,6 +92,8 @@ class Client
     @key = settings.key
     throw new Error("OmniChat::Client => Key is required for connection! Please, read the documentation") unless @key
 
+    @channel = settings.channel
+
     if settings.host
       @host = "#{settings.host}?key=#{@key}"
     else
@@ -96,8 +102,7 @@ class Client
     @user = settings.user
     @settings = settings
 
-  connect: (channel, beforeConnect) ->
-    @channel = channel
+  connect: (beforeConnect) ->
     @socket = io.connect(@host)
 
     this._listen_to('error', @settings.onError)

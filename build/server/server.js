@@ -55,8 +55,13 @@
               user: JSON <This JSON is defined by the client>
             }
       */    socket.on('join', function(data) {
-      var account, user_data;
+      var account, channel, user_data;
       account = socket.handshake.account;
+      channel = account.connected_path;
+      if (data.channel) {
+        channel = data.channel;
+      }
+      data.channel = channel;
       data.room_name = Room.get_room_name({
         channel: data.channel,
         key: account.key

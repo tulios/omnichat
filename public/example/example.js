@@ -85,7 +85,6 @@
     return users_container.show();
   };
   connect = function() {
-    channel = $("#user_channel").attr("value");
     client = new OmniChat.Client({
       host: "http://localhost:3000",
       key: "C3747C316C161E4C11A18CD1F8C2456F85EFBC9D",
@@ -121,7 +120,7 @@
         return console.log("Falha ao se conectar: " + reason);
       }
     });
-    return client.connect(channel, function() {
+    return client.connect(function() {
       $("#connect_form").hide();
       $("#chat_panel").show();
       return setup_chat_client();

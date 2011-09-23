@@ -59,6 +59,11 @@ io.sockets.on 'connection', (socket) ->
   ###
   socket.on 'join', (data) ->
     account = socket.handshake.account
+
+    channel = account.connected_path
+    channel = data.channel if data.channel
+    data.channel = channel
+
     data.room_name = Room.get_room_name({channel: data.channel, key: account.key})
 
     socket.set 'session', data
