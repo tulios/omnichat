@@ -58,7 +58,7 @@
     message_container = $('<div class="omnichat-message ' + class_name + '"></div>');
     message_img = $('<div class="omnichat-user-img"><img src="' + user.img + '"></div>');
     message_nick = $('<div class="omnichat-user-nick">' + user.nick + '</div>');
-    message_text = $('<div class="omnichat-user-text">' + message + '</div>');
+    message_text = $('<div class="omnichat-user-text">' + message + '<div class="rabo-balao"></div></div>');
     message_container.append(message_img);
     message_container.append(message_nick);
     message_container.append(message_text);
@@ -101,7 +101,7 @@
       },
       onNewMessage: function(data) {
         console.log("On New Message");
-        return add_new_message(data);
+        return add_new_message(data, "omnichat-you");
       },
       onSomeoneConnect: function(data) {
         console.log("" + data.user.nick + " connected!");
