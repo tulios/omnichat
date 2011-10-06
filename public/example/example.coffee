@@ -35,6 +35,8 @@ greetings_from_new_user = (user, text, class_name) ->
   add_new_message({user: user, text: text}, class_name)
 
 add_new_message = (data, class_name) ->
+  $('.omnichat-message:last').removeClass('ultima_mensagem')
+  
   user = data.user
   message = data.text
   class_name ?= ""
@@ -46,8 +48,10 @@ add_new_message = (data, class_name) ->
   message_container.append(message_img)
   message_container.append(message_nick)
   message_container.append(message_text)
-  $("#chat_messages_container").append(message_container)
-  $('body').get(0).scrollTop = 10000000
+  $("#chat_messages_container").append(message_container)  
+  $('.omnichat-message:last').addClass('ultima_mensagem')
+  $('#chat_messages_container').get(0).scrollTop = 100000000000
+  
 
 remove_from_the_users_list = (user) ->
   $("#chat_users_container #user_#{user.nick}").remove()
@@ -62,7 +66,6 @@ refresh_users_list = (users_list) ->
       user_div.append(user_img)
       user_div.append(user_name)
       users_container.append(user_div)
-
   users_container.show()
 
 connect = ->

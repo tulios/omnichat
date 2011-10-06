@@ -50,6 +50,7 @@
   };
   add_new_message = function(data, class_name) {
     var message, message_container, message_img, message_nick, message_text, user;
+    $('.omnichat-message:last').removeClass('ultima_mensagem');
     user = data.user;
     message = data.text;
     if (class_name == null) {
@@ -63,7 +64,8 @@
     message_container.append(message_nick);
     message_container.append(message_text);
     $("#chat_messages_container").append(message_container);
-    return $('body').get(0).scrollTop = 10000000;
+    $('.omnichat-message:last').addClass('ultima_mensagem');
+    return $('#chat_messages_container').get(0).scrollTop = 100000000000;
   };
   remove_from_the_users_list = function(user) {
     return $("#chat_users_container #user_" + user.nick).remove();
