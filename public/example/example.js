@@ -63,6 +63,7 @@
     message_container.append(message_img);
     message_container.append(message_nick);
     message_container.append(message_text);
+    message_container.fadeIn('fast');
     $("#chat_messages_container").append(message_container);
     $('.omnichat-message:last').addClass('ultima_mensagem');
     return $('#chat_messages_container').get(0).scrollTop = 100000000000;

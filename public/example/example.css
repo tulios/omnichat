@@ -105,6 +105,7 @@ body {
   overflow: auto;
   right: 0;
   position: fixed;
+  height: 100%;
 }
 
 .omnichat-disconnect .omnichat-user-text{
@@ -117,7 +118,42 @@ body {
   color: #266E38;
   border-color: #266E38;
 }
+#openchat{
+  background: #888;
+  border: 1px solid #666;
+  border-right-width: 0;
+  width: 28px;
+  position: fixed;
+  bottom: -1px;
+  height: 80px;
+  right: 272px;
+  border-radius: 8px 0 0 8px;
+  -webkit-border-radius: 8px 0 0 8px;
+  -moz-border-radius: 8px 0 0 8px;
+}
 
+#openchat .abrir{
+  position: absolute;
+  margin: 34px 0 0 0;
+  color: white;
+  font-weight: bold;
+  -webkit-transform: rotate(90deg);	
+  -moz-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+
+#openchat .fechar{
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  position: absolute;
+  width: 20px;
+  height: 42px;
+  padding: 26px 0 0 8px;
+  margin-top: 6px;
+}
 /*-------- Users -----*/
 .omnichat-user {
   border: 1px solid #333;

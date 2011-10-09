@@ -48,7 +48,8 @@ add_new_message = (data, class_name) ->
   message_container.append(message_img)
   message_container.append(message_nick)
   message_container.append(message_text)
-  $("#chat_messages_container").append(message_container)  
+  message_container.fadeIn('fast')
+  $("#chat_messages_container").append(message_container)
   $('.omnichat-message:last').addClass('ultima_mensagem')
   $('#chat_messages_container').get(0).scrollTop = 100000000000
   
