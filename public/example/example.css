@@ -96,17 +96,15 @@ body {
   -webkit-border-radius: 8px;
 }
 #chat_users_container {
-  margin-bottom: 120px;
-}
-
-.omnichat-user {
-  border: 1px solid white;
-  padding: 5px;
-  margin-bottom: 5px;
+  
 }
 
 #chat_panel{
-  margin-right:272px;
+  margin-right: 272px;
+  width: 136px;
+  overflow: auto;
+  right: 0;
+  position: fixed;
 }
 
 .omnichat-disconnect .omnichat-user-text{
@@ -118,6 +116,36 @@ body {
   background: #BAEBB4;
   color: #266E38;
   border-color: #266E38;
+}
+
+/*-------- Users -----*/
+.omnichat-user {
+  border: 1px solid #333;
+  padding: 0px;
+  margin-bottom: 2px;
+  clear: both;
+  min-height: 25px;
+  background: #506050;
+  border-radius: 8px 0 0 8px;
+  -web-border-radius: 8px 0 0 8px;
+  -moz-border-radius: 8px 0 0 8px;
+}
+.omnichat-user .omnichat-user-img{
+  width: 25px;
+  height: 25px;
+  overflow: hidden;
+  float: left;
+  margin-right: 6px;
+  border-radius: 8px;
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+}
+.omnichat-user .omnichat-user-img img{
+  width: 25px;  
+}
+.omnichat-user-name{
+  color:#fff;
+  padding: 5px 0;
 }
 /*-------- Me user -----*/
 
@@ -169,7 +197,6 @@ body {
 .ultima_mensagem{
   margin-bottom: 72px;
 }
-
 
 
 
