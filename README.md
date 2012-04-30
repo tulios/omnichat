@@ -9,9 +9,9 @@
   2 - Instalar coffeeScript  
     npm install -g coffee-script  
   
-  3 - Instalar as dependências do projeto
-    Testadas na versão 0.4.9 do node.js
-    npm install express socket.io mongodb@0.9.6-23 mongoskin hashlib sanitizer
+  3 - Instalar as dependências do projeto  
+    Testadas na versão 0.4.9 do node.js  
+    npm install express socket.io mongodb@0.9.6-23 mongoskin hashlib sanitizer  
                            
 ## Subindo o server
 
