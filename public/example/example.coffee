@@ -36,7 +36,7 @@ greetings_from_new_user = (user, text, class_name) ->
 
 add_new_message = (data, class_name) ->
   $('.omnichat-message:last').removeClass('ultima_mensagem')
-  
+
   user = data.user
   message = data.text
   class_name ?= ""
@@ -52,7 +52,7 @@ add_new_message = (data, class_name) ->
   $("#chat_messages_container").append(message_container)
   $('.omnichat-message:last').addClass('ultima_mensagem')
   $('#chat_messages_container').get(0).scrollTop = 100000000000
-  
+
 
 remove_from_the_users_list = (user) ->
   $("#chat_users_container #user_#{user.nick}").remove()
@@ -71,7 +71,7 @@ refresh_users_list = (users_list) ->
 
 connect = ->
   client = new OmniChat.Client({
-    host: "http://localhost:3000",
+    host: "http://omnichat.herokuapp.com",
     key: "C3747C316C161E4C11A18CD1F8C2456F85EFBC9D",
     user: get_user(),
     onConnect: (data) ->

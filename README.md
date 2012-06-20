@@ -45,26 +45,3 @@
   
   coffee --join public/javascripts/client.js --compile lib/client/util.coffee lib/client/client.coffee  
   coffee --watch --compile public/example/*.coffee  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  

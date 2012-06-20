@@ -93,29 +93,3 @@ io.sockets.on 'connection', (socket) ->
     socket.get 'session', (err, session) ->
       Room.with(db).remove_user {name: session.room_name}, session.user
       socket.broadcast.to(session.room_name).emit("user disconnected", Message.through(socket).user_disconnected(session))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
