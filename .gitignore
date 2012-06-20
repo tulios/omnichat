@@ -1,4 +1,5 @@
 .bundle
+
 db/*.sqlite3
 log/*.log
 tmp/
@@ -10,4 +11,3 @@ config/database.yml
 .DS_Store
 public/stylesheets/.DS_Store
 public/javascripts/plugins/.DS_Store
-node_modules
