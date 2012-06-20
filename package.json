@@ -1,6 +1,10 @@
 {
   "name": "omnichat",
   "version": "0.0.4",
+  "engines": {
+    "node": "0.5.0",
+    "npm":  "1.0.5"
+  },
   "dependencies": {
     "express": "2.4.3",
     "socket.io": "0.8.4",
