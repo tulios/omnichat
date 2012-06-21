@@ -89,7 +89,7 @@
   };
   connect = function() {
     client = new OmniChat.Client({
-      host: "http://localhost:3000",
+      host: "http://omnichat.herokuapp.com",
       key: "C3747C316C161E4C11A18CD1F8C2456F85EFBC9D",
       user: get_user(),
       onConnect: function(data) {
