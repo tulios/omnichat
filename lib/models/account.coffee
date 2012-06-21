@@ -1,4 +1,4 @@
-HashLib = require "hashlib"
+HashLib = require 'jshashes/server/lib/hashes'
 
 Account = {
 
@@ -12,7 +12,7 @@ Account = {
     @db.accounts.save {key: key, email: email, hosts: hosts, created_at: created_at}
 
   generate_key: (string) ->
-    HashLib.sha1(string).toUpperCase()
+    new Hashes.SHA1(string).toUpperCase()
 
   find: (query, callback) ->
     @db.accounts.find(query).toArray (err, accounts) =>
