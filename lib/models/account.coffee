@@ -1,4 +1,4 @@
-HashLib = require 'jshashes/server/lib/hashes'
+Hashes = require 'jshashes/server/lib/hashes'
 
 Account = {
 
